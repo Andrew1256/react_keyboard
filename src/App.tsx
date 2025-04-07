@@ -13,9 +13,14 @@ export class App extends React.Component<{}, AppState> {
 
   componentDidMount() {
     this.divRef.current?.focus();
+    document.addEventListener('keyup', this.handleKeyUp);
   }
 
-  handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+  componentWillUnmount() {
+    document.removeEventListener('keyup', this.handleKeyUp);
+  }
+
+  handleKeyUp = (event: KeyboardEvent) => {
     this.setState({ key: event.key });
   };
 
@@ -23,14 +28,12 @@ export class App extends React.Component<{}, AppState> {
     const { key } = this.state;
 
     return (
-      <div
-        className="App"
-        ref={this.divRef}
-        onKeyDown={this.handleKeyDown}
-        tabIndex={0}
-      >
-        {!key && <p className="App__message">Nothing was pressed yet</p>}
-        {key && <p className="App__message">The last pressed key is [{key}]</p>}
+      <div className="App" ref={this.divRef} tabIndex={0}>
+        {key ? (
+          <p className="App__message">The last pressed key is [{key}]</p>
+        ) : (
+          <p className="App__message">Nothing was pressed yet</p>
+        )}
       </div>
     );
   }
